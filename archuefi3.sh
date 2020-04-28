@@ -2,20 +2,28 @@
 rm -rf ~/.config/xfce4/*
 mkdir ~/downloads
 cd ~/downloads
+echo;
+echo;
 
-echo 'Установка AUR (yay)'
+echo '======= Установка AUR (yay)'
 sudo pacman -Syu
 sudo pacman -S wget --noconfirm
 wget git.io/yay-install.sh && sh yay-install.sh --noconfirm
+echo;
+echo;
 
-echo 'Создаем нужные директории'
+echo '======= Создаем нужные директории'
 sudo pacman -S xdg-user-dirs --noconfirm
 xdg-user-dirs-update
+echo;
+echo;
 
-echo 'Установка базовых программ и пакетов'
+echo '======= Установка базовых программ и пакетов'
 sudo pacman -S firefox firefox-i18n-ru ufw f2fs-tools dosfstools ntfs-3g alsa-lib alsa-utils file-roller p7zip unrar gvfs aspell-ru pulseaudio pavucontrol --noconfirm
+echo;
+echo;
 
-echo 'Установить рекомендумые программы?'
+echo '======= Установить рекомендумые программы?'
 read -p "1 - Да, 0 - Нет: " prog_set
 if [[ $prog_set == 1 ]]; then
   #Можно заменить на pacman -Qqm > ~/.pacmanlist.txt
@@ -23,13 +31,15 @@ if [[ $prog_set == 1 ]]; then
   wget https://raw.githubusercontent.com/ordanax/arch/master/attach/.aurlist.txt
   yay -S --noconfirm - < .aurlist.txt
 elif [[ $prog_set == 0 ]]; then
-  echo 'Установка программ пропущена.'
+  echo '======= Установка программ пропущена.'
 fi
+echo;
+echo;
 
-echo 'Скачать и установить конфиг и темы для XFCE?'
+echo '======= Скачать и установить конфиг и темы для XFCE?'
 read -p "1 - Да, 0 - Нет: " xfce_set
 if [[ $xfce_set == 1 ]]; then
-  echo 'Качаем и устанавливаем настройки Xfce'
+  echo '======= Качаем и устанавливаем настройки Xfce'
   # Чтобы сделать копию ваших настоек перейдите в домашнюю директорию ~/username 
   # открйте в этой категории терминал и выполните команду ниже
   # Предварительно можно очистить конфиг от всего лишнего
@@ -39,29 +49,44 @@ if [[ $xfce_set == 1 ]]; then
   sudo rm -rf ~/.config/xfce4/panel/
   sudo rm -rf ~/.config/xfce4/*
   sudo tar -xzf config.tar.gz -C ~/
-  echo 'Удаление тем по умолчанию'
+echo;
+echo;
+
+  echo '======= Удаление тем по умолчанию'
   sudo rm -rf /usr/share/themes/*
-  echo 'Установка тем'
+echo;
+echo;
+
+  echo '======= Установка тем'
   yay -S papirus-maia-icon-theme-git breeze-default-cursor-theme --noconfirm
   sudo pacman -S capitaine-cursors
-  echo 'Установка темы OSX-Arc-Shadow'
+echo;
+echo;
+
+  echo '======= Установка темы OSX-Arc-Shadow'
   wget https://github.com/thiagolucio/OSX-Arc-Shadow/archive/master.zip
   7z x master.zip
   sudo mv -f ~/downloads/OSX-Arc-Shadow-master /usr/share/themes
+echo;
+echo;
   
-  echo 'Ставим лого ArchLinux в меню'
+  echo '======= Ставим лого ArchLinux в меню'
   wget git.io/arch_logo.png
   sudo mv -f ~/downloads/arch_logo.png /usr/share/pixmaps/arch_logo.png
+echo;
+echo;
 
-  echo 'Ставим обои на рабочий стол'
+  echo '======= Ставим обои на рабочий стол'
   wget git.io/bg.jpg
   sudo rm -rf /usr/share/backgrounds/xfce/* #Удаляем стандартрые обои
   sudo mv -f ~/downloads/bg.jpg /usr/share/backgrounds/xfce/bg.jpg
 elif [[ $xfce_set == 0 ]]; then
-  echo 'Установка конфигов XFCE пропущена.'
+  echo '======= Установка конфигов XFCE пропущена.'
 fi 
+echo;
+echo;
 
-echo "Ставим i3 с моими настройками?"
+echo "======= Ставим i3 с моими настройками?"
 read -p "1 - Да, 2 - Нет: " vm_setting
 if [[ $vm_setting == 1 ]]; then
     pacman -S i3-wm i3-gaps i3status sbxkb dmenu pcmanfm ttf-font-awesome feh lxappearance thunar gvfs udiskie xorg-xbacklight ristretto tumbler compton --noconfirm
@@ -71,8 +96,10 @@ if [[ $vm_setting == 1 ]]; then
     sudo rm -rf ~/.config/polybar/*
     sudo tar -xzf i3wm_config.tar.gz -C ~/
 elif [[ $vm_setting == 2 ]]; then
-  echo 'Пропускаем.'
+  echo '======= Пропускаем.'
 fi
+echo;
+echo;
 
 #echo 'Убираем меню граб для выбора системы?'
 #read -p "1 - Да, 0 - Нет: " grub_set
@@ -99,23 +126,31 @@ fi
 #  echo 'Пропускаем.'
 #fi
 
-echo 'Установить conky?'
+echo '======= Установить conky?'
 read -p "1 - Да, 0 - Нет: " conky_set
 if [[ $conky_set == 1 ]]; then
   sudo pacman -S conky conky-manager --noconfirm
   wget git.io/conky.tar.gz
   tar -xzf conky.tar.gz -C ~/
 elif [[ $conky_set == 0 ]]; then
-  echo 'Установка conky пропущена.'
+  echo '======= Установка conky пропущена.'
 fi
+echo;
+echo;
 
-echo 'Включаем сетевой экран'
+echo '======= Включаем сетевой экран'
 sudo ufw enable
+echo;
+echo;
 
-echo 'Добавляем в автозагрузку:'
+echo '======= Добавляем в автозагрузку:'
 sudo systemctl enable ufw
+echo;
+echo;
 
 rm -R ~/downloads/
 rm -rf ~/archuefi3.sh
+echo;
+echo;
 
-echo 'Установка завершена!'
+echo '======= Установка завершена!'

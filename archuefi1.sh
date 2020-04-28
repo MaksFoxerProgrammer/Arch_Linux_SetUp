@@ -92,4 +92,4 @@ genfstab -pU /mnt >> /mnt/etc/fstab
 echo;
 echo;
 
-arch-chroot /mnt sh -c "$(curl -fsSL git.io/arch2.sh)"
+arch-chroot /mnt sh -c "$(curl -fsSL git.io/MNArch3.sh)"
