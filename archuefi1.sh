@@ -3,70 +3,93 @@
 # Arch Linux Fast Install - Быстрая установка Arch Linux https://github.com/ordanax/arch2018
 # Цель скрипта - быстрое развертывание системы с вашими персональными настройками (конфиг XFCE, темы, программы и т.д.).
 
-# Автор скрипта Алексей Бойко https://vk.com/ordanax
-
+# В разработке принимали участие:
+# Алексей Бойко https://vk.com/ordanax
+# Степан Скрябин https://vk.com/zurg3
+# Михаил Сарвилин https://vk.com/michael170707
+# Данил Антошкин https://vk.com/danil.antoshkin
+# Юрий Порунцов https://vk.com/poruncov
 
 loadkeys ru
 setfont cyr-sun16
-echo 'Скрипт сделан на основе чеклиста Бойко Алексея по Установке ArchLinux'
-echo 'Ссылка на чек лист есть в группе vk.com/arch4u'
+echo '======= Скрипт сделан на основе чеклиста Бойко Алексея по Установке ArchLinux'
+echo '======= Ссылка на чек лист есть в группе vk.com/arch4u'
 
-echo '2.3 Синхронизация системных часов'
+echo '======= 2.3 Синхронизация системных часов'
 timedatectl set-ntp true
 
-echo '2.4 создание разделов'
+echo '======= 2.4 создание разделов'
 (
- echo g;
+  echo o;
 
- echo n;
- echo ;
- echo;
- echo +300M;
- echo y;
- echo t;
- echo 1;
+  echo n; 		# для /mnt/boot
+  echo;
+  echo;
+  echo;
+  echo +5G
 
- echo n;
- echo;
- echo;
- echo +30G;
- echo y;
- 
-  
- echo n;
- echo;
- echo;
- echo;
- echo y;
-  
- echo w;
+  echo n;		# для /mnt
+  echo;
+  echo;
+  echo;
+  echo +40G;
+
+  echo n;		# для /swap
+  echo;
+  echo;
+  echo;
+  echo +4G;
+
+  echo n;		# для /mnt/home
+  echo p;
+  echo;
+  echo;
+  echo a;
+  echo 1;
+
+  echo w;
 ) | fdisk /dev/sda
 
-echo 'Ваша разметка диска'
+echo '======= Ваша разметка диска'
 fdisk -l
+echo;
+echo;
 
-echo '2.4.2 Форматирование дисков'
+echo '======= Ваша разметка диска (2)'
+lsblk;
+echo;
+echo;
 
-mkfs.fat -F32 /dev/sda1
-mkfs.ext4  /dev/sda2
-mkfs.ext4  /dev/sda3
+echo '======= 2.4.2 Форматирование дисков'
+mkfs.ext2  /dev/sda1 -L boot
+mkfs.ext4  /dev/sda2 -L root
+mkswap /dev/sda3 -L swap
+mkfs.ext4  /dev/sda4 -L home
+echo;
+echo;
 
-echo '2.4.3 Монтирование дисков'
+echo '======= 2.4.3 Монтирование дисков'
 mount /dev/sda2 /mnt
-mkdir /mnt/home
-mkdir -p /mnt/boot/efi
-mount /dev/sda1 /mnt/boot/efi
-mount /dev/sda3 /mnt/home
+mkdir /mnt/{boot,home}
+mount /dev/sda1 /mnt/boot
+swapon /dev/sda3
+mount /dev/sda4 /mnt/home
+echo;
+echo;
 
-echo '3.1 Выбор зеркал для загрузки.'
-rm -rf /etc/pacman.d/mirrorlist
-wget https://git.io/mirrorlist
-mv -f ~/mirrorlist /etc/pacman.d/mirrorlist
+echo '======= 3.1 Выбор зеркал для загрузки. Ставим зеркало от Яндекс'
+echo "Server = http://mirror.yandex.ru/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+echo;
+echo;
 
-echo '3.2 Установка основных пакетов'
+echo '======= 3.2 Установка основных пакетов'
 pacstrap /mnt base base-devel linux linux-firmware nano dhcpcd netctl
+echo;
+echo;
 
-echo '3.3 Настройка системы'
+echo '======= 3.3 Настройка системы'
 genfstab -pU /mnt >> /mnt/etc/fstab
+echo;
+echo;
 
-arch-chroot /mnt sh -c "$(curl -fsSL git.io/archuefi2.sh)"
+arch-chroot /mnt sh -c "$(curl -fsSL git.io/arch2.sh)"
